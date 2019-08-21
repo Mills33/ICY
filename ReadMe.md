@@ -4,7 +4,7 @@
 
 
 
-<img src="../Images/logo.png" style="zoom:70%" />
+<img src="/Images/logo.png" style="zoom:25%" />
 
 
 
