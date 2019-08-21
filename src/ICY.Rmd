@@ -1,0 +1,436 @@
+---
+title: "I.C.Y Report"
+output: 
+  pdf_document:
+      latex_engine: xelatex
+      extra_dependencies: ["graphicx"]
+      
+fontsize: 12pt
+header-includes:
+    - \usepackage {hyperref}
+    - \hypersetup {colorlinks = true, linkcolor = cyan, urlcolor = cyan}
+    - \usepackage[font={small}, labelfont={bf}]{caption}
+    - \usepackage{fancyhdr}
+    - \usepackage{float}
+    - \usepackage{longtable, tabu}
+    - \usepackage{booktabs}
+    - \usepackage{makecell}
+    - \usepackage[table]{xcolor}
+    - \usepackage{pdflscape}
+    - \usepackage[export]{adjustbox}
+always_allow_html: yes
+mainfont: Times
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+
+params:
+  all_data:
+    value: NA
+    input: file
+  numbFem: 
+    value:  NA
+    input: numeric 
+  numbMal: 
+    value:  NA
+    input: numeric 
+  threshold:
+    value:  NA
+    input: numeric 
+  kinship:
+    value: NA
+    input: file
+  founder:
+    value: NA
+    input: file
+
+---
+\ 
+\ 
+\ 
+\  
+```{r, include=FALSE}
+options(tinytex.verbose = TRUE)
+```
+
+```{r setup, include=FALSE}
+library(tinytex)
+library(reticulate)
+library(knitr)
+library(kableExtra)
+library(tinytex)
+source_python("ichooseyou_sep.py")
+```
+\vspace{4cm}
+\begin{figure}[H]
+
+\includegraphics[width=\linewidth]{../Images/logo.png}
+ 
+\end{figure}
+
+```{r, include=FALSE}
+
+
+
+All_data <- py$create_data_file(params$all_data)
+chosentable <- py$chosen_ones_tables(params$all_data, params$kinship , params$thresh, params$numbMal, params$numbFem)
+female_data <- py$female_data_format(params$all_data)
+male_data <- py$male_data_format(params$all_data)
+female_pie <- py$create_dataset(female_data)
+male_pie <- py$create_dataset(male_data)
+
+```
+
+
+\clearpage
+
+
+\section{\textbf{How to use this report}}
+
+
+The following report uses studbook data to generates a group of individuals recommended for reintroduction (where group size is equal to the number of females needed + number males needed). This report also provides tables and plots designed to give practitioners information about all the individuals that were in the selection they uploaded to ICY.  The suitability of a individual for translocation is based on (1) the number of \hyperlink{term0}{founder equivalents (Fe)} in an individual, its (2) \hyperlink{term2}{mean kinship coefficient (MK)}, which is a measure of a individuals average relatedness to other individuals in the population and (3) it relatedness to other individuals that would be released with it. 
+
+Founder equivalents are a way of measuring genetic diversity from pedigree data. They can be thought as how many wild caught founders would be needed to recreate the current level of genetic diversity and can be calculated for individuals or for the population as a whole. Founder equivalents is a metric that takes into account both the number of founder genomes that an individual is descended from and also each founder's relative contributions (or \hyperlink{term1}{\textbf{founder representation}}). It is perhaps intuitive that the more founders an individual is descended from the greater its genetic diversity. However the relative contribution of each of the founders is incredibly important as uneven contributions lead to a loss in genetic diversity and an increase in inbreeding. The maximum number of founder equivalents that an individual could have would be equal to the number of individuals that founded the population (according to the studbook)  and would only occur if all of the founders were represented evenly within that individual.  
+
+\textbf{Figure 1} gives a simple example of how founder representation is calculated, it also demonstrates how this can be graphically represented, \textbf{figure 2} gives an example demonstrating how graphs of even and uneven founder representations may look. 
+ 
+
+\begin{figure}[H]
+
+\includegraphics[width=\linewidth]{../Images/figure1.png}
+  \caption{An example of how founder representation is calculated and how it can be visualised with bar charts}
+\end{figure}
+
+\begin{figure}[H]
+
+\includegraphics[width=0.7\linewidth, center]{../Images/figure2.png}
+  \caption{An example of how equal and unequal founder representation graphs may look. The dashed line represents the expected height of the bars if founder representation was equal which in this example, with 17 founders, is 5.88\%}
+\end{figure}
+
+
+
+
+
+
+\subsection{\underline{\textbf{How to choose individuals for reintroduction}}}
+
+This report should make it easier to choose a group of individuals based on their possible genetic diversity and relatedness however the rankings do not include any other information that may, or may not, make an individual suitable for reintroduction. Ultimately it will be up to the person reading this report to decide what other factors (other than genetic ones) make a individual suitable for translocation. The points below provide further guidance for selecting individuals to maximise genetic diversity in the released individuals and ensuring the overall genetic health of the captive and released populations.
+
+\begin{itemize}
+\item \textbf{Group recommended by ICY} - These are not simply the highest ranked individuals (rankings based on MK and Fe). But the individuals with the highest rankings that are less related the the specified relatedness threshold. This is an important point related individuals may be highly ranked but if you released a group of highly related individuals the resulting population would not be genetically healthy and would likely suffer from inbreeding depression.\newline 
+\item \textbf{Pragmatic considerations} - Age, location, possible disease or health issues, are the individuals available for translocations?\newline  
+\item \textbf{How valuable are the individuals to the captive population?}- When you remove a individual from captivity you remove its genes and so a balance must be struck between translocating individuals and ensuring a healthy captive population that can continue to produce healthy, genetically diverse individuals for future reintroductions. Therefore it may be better to initially choose slightly lower ranking individuals because they will still have a positive impact on the wild population but will ensure a healthy, useful captive population.\newline
+\item \textbf{How inbred are the individuals?} - The more inbred a individual the lower its genetic diversity and the greater the likelihood it will suffer from inbreeding depression. Inbreeding is measured by the \hyperlink{term4}{inbreeding coefficient}.\newline
+\item \textbf{How related are the individuals to any that may have been previously translocated into the wild?}- This may not be relevant for the very first translocation but should be considered in any future translocations.\newline
+\item \textbf{Make sure to select an even number of males and females.} - An uneven sex ratio during reintroductions has been shown to contribute to decreased genetic diversity and increased inbreeding.\newline 
+\end{itemize}
+
+
+\section{\underline{\textbf{Report Contents}}}
+
+All section titles below (in blue) are linked directly to the sections they refer to (just click on them!), any words in blue link to the glossary at the end of the report, any references in blue are hyper-linked to the relevant manuscripts URLs.
+
+\subsection{\underline{\textbf{Main reports}}}
+
+\hyperlink{found_contrib}{\textbf{Founder representation report}} - Summary of the number of founder equivalents in the current population and a bar chart which shows what proportion of the genes in the current population come from each founder (founder representation). This gives an indication of the overall genetic health of the captive population and which founders may be under-represented and therefore whose genetic contribution is in danger of being lost from the population.
+
+\hyperlink{best_ind}{\textbf{Individuals recommended for reintroduction}} - Table with group of individuals most suitable for reintroduction based on ICYs algorithm (group of birds least related with most Fe, lowest MK). Graphs showing founder contribution of the chosen animals and how it compares with the overall founder representation with the population as a whole.
+
+\subsection{\underline{\textbf{Supplementary reports}}}
+
+\hyperlink{fem_rep}{\textbf{Female suitability report}} - Bar charts of founder representation for each living female individual in the population, this is followed by a spreadsheet showing the ranks of females based on the number of founder equivalents and mean kinship coefficient. 
+
+\hyperlink{male_rep}{\textbf{Male suitability report}} -Bar charts of founder representation for each living male individual in the population, this is followed by a spreadsheet showing the ranks of males based on the number of founder equivalents and mean kinship coefficient. 
+
+\hyperlink{overall}{\textbf{Overall suitability report}}- Spreadsheet of most to least suitable individuals to supplement (regardless of sex), including more details about founder representations.
+
+\subsection{\underline{\textbf{Glossary \& references}}}
+\hyperlink{terms}{\textbf{Glossary}}- Provides definitions of a few key terms (found in blue throughout the report)
+
+\hyperlink{reading}{\textbf{Recommended reading \& references}} - Suggestions for further reading and references that contributed to this report.
+
+
+
+```{r, include=FALSE}
+
+library(ggplot2)
+library(tidyverse)
+library(kableExtra)
+library(reticulate)
+
+
+founder_pie <- read.csv(params$founder)
+
+founder_pie <- founder_pie[order(-founder_pie$Representation),]
+number_founders <- nlevels(founder_pie$UniqueID)
+equal_rep <- round((100/number_founders), digits = 2)
+
+gg_color_hue <- function(n) {
+  hues = seq(15, 375, length=n+1)
+  hcl(h=hues, l=65, c=100)[1:n]}
+
+mycols <- gg_color_hue(length(unique(founder_pie$UniqueID)))
+names(mycols) <- unique(founder_pie$UniqueID)
+mycols["Unk"] <- "black"
+
+colnames(female_pie)[1] <- 'UniqueID'
+colnames(male_pie)[1] <- 'UniqueID'
+female_pie$UniqueID <- as.numeric(female_pie$UniqueID)
+male_pie$UniqueID <- as.numeric(male_pie$UniqueID)
+female_pie$UniqueID <- round(female_pie$UniqueID)
+male_pie$UniqueID <- round(male_pie$UniqueID)
+female_pie$Percent_contribution <- as.numeric(female_pie$`FounderContribution(%)`)
+male_pie$Percent_contribution <- as.numeric(male_pie$`FounderContribution(%)`)
+female_pie$UniqueID <- as.factor(female_pie$UniqueID)
+male_pie$UniqueID <- as.factor(male_pie$UniqueID)
+female_df <- mutate(female_pie, UniqueID = factor(UniqueID, unique(UniqueID))) 
+male_df <- mutate(male_pie, UniqueID = factor(UniqueID, unique(UniqueID))) 
+
+
+```
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+\clearpage
+\hypertarget{found_contrib}{\section{\textbf{Founder representation report}}}
+
+\subsection{\underline{\textbf{Summary}}}
+The number of founders represented in the population is `r number_founders`, if the founders were all represented evenly they would be present at `r equal_rep`% within the population.The number of founder equivalents found on average in the population could be increased by tactical breeding to even out representations.\newline
+\subsection{\underline{\textbf{Founder representation in the current population}}}
+The graph below shows how each founder is represented in the current population the dashed line represents the expected height of the bars if founder representation is equal `r equal_rep`. For example it can be seen that the highest proportion of genes in the current population belong to individual `r head(founder_pie$UniqueID, n =1)` . In contrast only a small proportion of the genes present in today's population come from founder `r tail(founder_pie$UniqueID, n =1)`. This may mean that the population could be in danger of losing all genes from `r tail(founder_pie$UniqueID, n =1)` unless careful attention is paid in the following breeding seasons to maximise `r tail(founder_pie$UniqueID, n =1)` contribution to the population. If a founders' contribution is lost from the population, that population loses genetic diversity and will likely be less healthy and robust.\newline 
+
+
+```{r, echo = FALSE, fig.width = 10, fig.height = 4}
+
+ggplot(founder_pie, aes(x = reorder(UniqueID, -Contribution), y = Contribution, fill = UniqueID )) + 
+  geom_col(width = 1, colour ="black") +
+  geom_hline(yintercept= equal_rep, linetype="dashed", size = 1)+
+  scale_fill_manual(values=mycols) +
+  xlab("") +
+  ylab("") +
+  theme(legend.title = element_text(size = 16, family  ="Times"),
+        legend.text = element_text(size = 14, family  ="Times"),
+        legend.key.size = unit(0.5, "cm"),
+        legend.key.width = unit(0.5,"cm"),
+        axis.ticks.x = element_blank(),
+        axis.text.x = element_blank(),
+        panel.grid.major.x = element_blank(),
+        axis.text.y = element_text(size = 14))
+       
+```
+          
+\newpage
+\hypertarget{best_ind}{\section{\textbf{Individuals recommended for reintroduction}}}
+
+The table below contains the individuals that are recommended for reintroduction. These individuals are not just the highest ranked but are the highest ranked individuals that as a group of individuals are the least related. The rankings are based on the individuals mean kinship and the number of founders in their genome however it is important that the group of individuals being released are as unrelated as possible to avoid inbreeding depression and increase genetic diversity. The graphs show the founder representation of each bird (bar chart) and the line shows how the different founders are represented in the population as a whole (this the same data as represented in the founder representation bar chart on the previous page).
+
+```{r, echo= FALSE}
+library(tibble)
+library(kableExtra)
+library(reticulate)
+
+chosentable <- chosentable[,c(12,1,2,3,4,5,6,9,11)]
+
+
+kable(chosentable,row.names = F, format="latex",longtable = T, caption = "individuals recommended for reintroduction/translocation.", booktabs=TRUE)%>%kable_styling(latex_options = c("striped","HOLD_position","repeat_header"))%>% row_spec(0, bold = T)
+names(founder_pie)[names(founder_pie)=="UniqueID"] <- "Founder"
+
+chosen_ind <- as.numeric(chosentable[[2]])
+All_ind <- rbind(female_df, male_df)
+chosen_graph <- subset(All_ind, All_ind$UniqueID %in% chosen_ind)
+
+ggplot(chosen_graph, aes(x = Founder, y = Percent_contribution)) +
+  geom_col(aes(fill = Founder),colour="black", width = 1) +
+  geom_hline(yintercept=equal_rep, linetype="dashed", size = 0.75) +
+  ylab("Percentage representation") +
+  ggtitle("Founder representation of the individuals recommended for reintroduction (coloured bars) 
+compared to the founder representation in current population (black line) ") +
+  theme(plot.title= element_text(margin = margin(15,0,30,0), hjust = 0.5, family  ="Times"),
+        legend.title = element_text(family  ="Times"),
+        legend.text = element_text(family  ="Times"),
+        axis.ticks.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.title.y = element_text(family = "Times"),
+        panel.grid.major.x = element_blank())  +
+  scale_fill_manual(values = mycols) +
+  facet_wrap(~UniqueID) +
+  geom_line(data = founder_pie, aes(x = Founder, y = Contribution, group = 1), size = 1)
+
+
+```
+
+\newpage
+\hypertarget{fem_rep}{\section{\textbf{Female suitability report}}}
+
+The bar charts below shows the founder representation for each female individual in the current population. The Unique ID for a individual is at the top of each plot and the dashed line represents the expected height of the bars if founder representation is equal (`r equal_rep`%). The graphs are arranged from highest ranking individual (top left) to lowest ranking individual (bottom right). The page after the graphs contains a table detailing the highest to lowest ranked female individuals (all rankings based on the number of founder equivalents (Fe) and mean kinship coefficients (MK)).The table also contains information that may be useful when selecting individuals for translocation such as age, location of zoo & \hyperlink{term4}{inbreeding coefficient} (F) .\newline  
+
+\ 
+\ 
+\ 
+
+
+```{r, echo = FALSE, fig.width = 14, fig.height = 13, fig.align = "centre"}
+ 
+
+ggplot(female_df,aes(x = Founder, y = Percent_contribution, fill = Founder)) + 
+  geom_col( width = 1, colour="black") +
+  geom_hline(yintercept=equal_rep, linetype="dashed", size = 0.75)+
+  xlab("") +
+  ylab("Percentage representation") +
+  ggtitle("Founder representation in current population (female)") +
+  theme(plot.title= element_text(size = 18, margin = margin(0,0,30,0), hjust = 0.5, family  ="Times"),
+        legend.title = element_text(size = 16, family  ="Times"),
+        legend.text = element_text(size = 14, family  ="Times"),
+        legend.key.size = unit(1, "cm"),
+        legend.key.width = unit(1,"cm"),
+        axis.ticks.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.title.y = element_text(size = 16, family = "Times"),
+        panel.grid.major.x = element_blank())  +
+        scale_fill_manual(values=mycols) +
+  facet_wrap( ~ UniqueID)
+
+```
+\newpage
+```{r, echo= FALSE}
+library(dplyr)
+library(tibble)
+library(kableExtra)
+library(reticulate)
+female <- female_data[,c(12,1,2,3,4,5,6,9,11)]
+
+kable(female, align="c", row.names = F, format ="latex",longtable = T, caption = "Information of females most to least suitable for translocation, rankings based on the number of founder equivalents (Fe) in an individual and its mean kinship (MK)", booktabs=TRUE)%>%kable_styling(latex_options = c("striped","HOLD_position","repeat_header"))%>% row_spec(0, bold = T)%>%column_spec(column = 8, width = "5em") 
+```
+\newpage
+\hypertarget{male_rep}{\section{\textbf{Male suitability report}}}
+
+The bar charts below shows the founder representation for each male individual in the current population. The Unique ID for a individual is at the top of each plot and the dashed line represents the expected height of the bars if founder representation is equal (`r equal_rep`%). The graphs are arranged from highest ranking individual (top left) to lowest ranking individual (bottom right). The page after the graphs contains a table detailing the highest to lowest ranked male individuals (all rankings based on the number of founder equivalents (Fe) in an individual and its mean kinship coefficients (MK)).The table also contains information that may be useful when selecting individuals for translocation such as age, location of zoo & \hyperlink{term4}{inbreeding coefficient} (F) value.\newline  
+\ 
+\ 
+\ 
+
+
+```{r, echo = FALSE, fig.width = 14, fig.height = 13, fig.align = "centre"}
+ggplot(male_df,aes(x = Founder, y = Percent_contribution, fill = Founder)) + 
+  geom_col( width = 1, colour="black") +
+  geom_hline(yintercept=equal_rep, linetype="dashed", size = 0.75)+
+  xlab("") +
+  ylab("Percentage representation") +
+  ggtitle("Founder representation in current population (male)") +
+  theme(plot.title= element_text(size = 18, margin = margin(0,0,30,0), hjust = 0.5, family  ="Times"),
+        legend.title = element_text(size = 16, family  ="Times"),
+        legend.text = element_text(size = 14, family  ="Times"),
+        legend.key.size = unit(1, "cm"),
+        legend.key.width = unit(1,"cm"),
+        axis.ticks.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.title.y = element_text(size = 16, family = "Times"),
+        panel.grid.major.x = element_blank())  +
+        scale_fill_manual(values=mycols) +
+  facet_wrap( ~ UniqueID)
+```
+
+\newpage
+```{r, echo=FALSE }
+library(kableExtra)
+library(reticulate)
+
+male <- male_data[,c(12,1,2,3,4,5,6,9,11)]
+kable(male, align="c", row.names = F, format ="latex",longtable = T, caption = "Information of females most to least suitable for translocation, rankings based on the individual founder equivalent (Fe) and mean kinship (MK)", booktabs=TRUE)%>%kable_styling(latex_options = c("striped","HOLD_position","repeat_header"))%>% row_spec(0, bold = T)%>%column_spec(column = 8, width = "5em")
+
+```
+\ 
+\ 
+\ 
+\ 
+\ 
+\newpage
+
+\hypertarget{overall}{\section{\textbf{Overall suitability report}}}
+ 
+The table overleaf shows all current individuals ranked from most suitable to least suitable for translocation. The individuals are ranked (as in the previous tables) by the number of founder equivalents (Fe) and mean kinship coefficient (MK). The table below details more precise information (than the previous reports) about the founder representation in each individual in the current population.
+
+
+
+```{r, echo=FALSE}
+
+x <- All_data$MyFounders
+x <- gsub("c(", "", x, fixed="TRUE")
+x <- gsub(")", "", x, fixed="TRUE")
+x <- gsub('"', '', x, fixed="TRUE")
+All_data$MyFounders <- x
+
+y <- All_data[[10]]
+y <- gsub("c(", "", y, fixed="TRUE")
+y <- gsub(")", "", y, fixed="TRUE")
+
+All_data[[10]] <- y
+names(All_data)[names(All_data)=="FounderContribution(%)"] <- "Founder contribution(%)"
+All_data <- All_data[,c(12,1,2,3,4,5,6,9,7,10)]
+All_data <- as_tibble(All_data)
+All_data <- All_data %>% rename('Founders' = MyFounders) 
+All_data <- All_data %>% rename('Age(years)' = AgeYears) 
+
+options(pillar.sigfig=3)
+
+kable(All_data, align="c", format ="latex", longtable =T, caption = "Information about individuals (both sexes) most to least suitable for translocation", booktabs=TRUE)%>%kable_styling(latex_options = c("striped","HOLD_position","repeat_header"), font_size = 7, full_width = T) %>% 
+  row_spec(0, bold = T) %>% 
+  column_spec(column = 1, width = "3em") %>% 
+  column_spec(column = 2, width = "3em") %>% 
+  column_spec(column = 3, width = "5em") %>%
+  column_spec(column = 4, width = "5em") %>% 
+  column_spec(column = 5, width = "2em") %>% 
+  column_spec(column = 6, width = "2em") %>%
+  column_spec(column = 7, width = "5em") %>% 
+  column_spec(column = 8, width = "5em") %>%
+  column_spec(column = 9, width = "20em") %>%
+  column_spec(column = 10, width = "15em") %>%
+  landscape()
+```
+
+\hypertarget{terms}{\section{\textbf{Glossary}}}
+
+\hypertarget{term0}{\textbf{Founder equivalents}} - A measure of genetic diversity and health. It calculates the number of founder genomes present in the current population or an individual and their relative representations. If all founders are represented equally the number of founder equivalents equal the number of founders.
+
+\hypertarget{term1}{\textbf{Founder representation}} -  The proportion of each founders' genes found in an individual in the population\newline 
+
+\hypertarget{term3}{\textbf{Genome}} - All the genes in an individual\newline   
+
+\hypertarget{term4}{\textbf{Inbreeding coefficient}} - Measure of inbreeding denoted by 'F', the higher the inbreeding coefficient the more inbred the individuals are. This can be thought of as how much of an individuals genome is is likely to share with other individuals in the population. When individuals are highly inbred they can experience inbreeding depression which can manifest as reduced survival, fecundity or an increase in health problems.\newline
+
+\hypertarget{term2}{\textbf{Mean kinship}} - Measure of relatedness, denoted in tables by 'MK'. The mean kinship is on average how related a individual is to the other individuals in the population, the higher the MK the higher the average relatedness. The mean kinship coefficient = mean inbreeding coefficient of the hypothetical offspring between the individual individual and any other in the population.
+
+
+
+\hypertarget{reading}{\section{\textbf{Recommended reading \& references}}}
+
+\subsection{\underline{\textbf{Genetics in management}}}
+
+Frankham, R., Jonathan, B. and David, B. 2012. Introduction To Conservation Genetics. 2nd ed. New York: Cambridge University Press.\newline
+
+Grueber, C.E. and Jamieson, I.G. 2008. \href{https://www.researchgate.net/publication/225887206_Quantifying_and_managing_the_loss_of_genetic_variation_in_a_free-ranging_population_of_takahe_through_the_use_of_pedigrees}{Quantifying and managing the loss of genetic variation in a free-ranging population of takahe through the use of pedigrees.} Conservation genetics (Print) 9(3), pp. 645–651.\newline
+
+Jamieson, I.G. 2011. \href{https://onlinelibrary.wiley.com/doi/full/10.1111/j.1523-1739.2010.01574.x}{Founder effects, inbreeding, and loss of genetic diversity in four avian reintroduction programs.} Conservation Biology 25(1), pp. 115–123.\newline
+
+Loercher, F., Keller, L. and Hegglin, D. 2013. \href{http://www.swild.ch/publi/Loercher_5thSymResProAre2013.pdf}{Low genetic diversity of the reintroduced bearded vulture (\emph{Gypaetus barbatus}) population in the Alps calls for further releases.} In: pp. 473–478.\newline
+
+\subsection{\underline{\textbf{Founder Equivalents}}}
+
+The equation that was used to calculate the number of founder equivalents comes originally from Lacy, 1989 and is as follows:
+
+\(Fe = 1/\sum(pi^2)\)
+
+Where \emph{Fe} is the number of founder equivalents and \emph{pi} is a founders representation. 
+
+This translates to:
+
+An individuals founder equivalents = 1 divided by the sum of all the founder representations squared
+
+Founder contributions were generated from studbook data automatically in Pmx (version 1.4.2).
+
+
+Hedrick, P.W., Hoeck, P.E.A., Fleischer, R.C., Farabaugh, S. and Masuda, B.M. 2016. \href{https://link.springer.com/article/10.1007/s10592-015-0788-z}{The influence of captive breeding management on founder representation and inbreeding in the ‘Alalā, the Hawaiian crow.} Conservation genetics (Print) 17(2), pp. 369–378.\newline
+
+Lacy, R. 1989. \href{https://onlinelibrary.wiley.com/doi/abs/10.1002/zoo.1430080203}{Analysis of Founder Representation in Pedigrees: Founder Equivalents and founder equivalents.} Zoo Biology 8, pp. 111–123.\newline
+
+\subsection{\underline{\textbf{Software used to analyse studbook data (free)}}}
+
+Ballou, J., Lacy, R. and Pollak, J. 2010. \href{https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/j.2041-210X.2011.00148.x}{PMx: software for demographic and genetic analysis and management of pedigreed populations.} Brookfield, Illinois, USA.: Chicago Zoological Society.
+
