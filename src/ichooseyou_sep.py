@@ -110,7 +110,8 @@ def format_matrix_from_studbook(csv_file):
     return(kinship_matrix)
 
 def change_index_to_ID(data):
-    new_data = data.set_index('UniqueID', inplace = False)
+    data['UniqueID'] = data['UniqueID'].str.strip()
+    new_data = data.set_index('UniqueID', inplace = False, drop = True)
     new_data.rename(index=str, inplace=True)
     ranked_birds = list(new_data.index.values)
     return(new_data, ranked_birds)
@@ -133,6 +134,7 @@ def remove_related_from_kinship_matrix(kinship_matrix, undesirable_list):
 
 def checking_relatedness(threshold, ID, kinship_matrix):
     delete_individuals = []
+    ID = str(ID)
     kin_coeff = kinship_matrix.loc[ID]
     column_list = list(kin_coeff)
     for x in range(0, len(kinship_matrix)):
@@ -176,15 +178,17 @@ def chosen_animals(threshold, number_males, number_females, data, kinship_matrix
 
 
 def create_data_file(datafile):
-        panda = pd.read_csv(datafile, usecols=["UniqueID", "Location", "Sex", "F", "MK", "AgeYears", "MyFounders", "MyFounderContribs", "Alive"])
+        panda = pd.read_csv(datafile, index_col = None, usecols=["UniqueID", "Location", "Sex", "F", "MK", "AgeYears", "MyFounders", "MyFounderContribs", "Alive"])
         all_live_found_list, data = format_pmx_list(panda)
         data.query("Alive == True", inplace = True)
         data.drop(columns = "Alive", inplace = True )
+        data.reset_index(inplace = True, drop = True)
         data = count_founders(data)
         data = convert_founder_percentage(data)
         data = data.sort_values(["Fe", "MK"], ascending=[False, True])
         data['Rank'] = list(range(1, len(data) + 1))
         return(data)
+
 
 def female_data_format(datafile):
         data = create_data_file(datafile)

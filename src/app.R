@@ -125,19 +125,22 @@ server <- function(input, output) {
   else { 
     
     founder_pie <- read.csv(input$founder$datapath)
+    founder_pie$UniqueID <- gsub(" ", "", founder_pie$UniqueID, fixed="TRUE")
     founder_pie <- founder_pie[order(-founder_pie$Representation),]
-    number_founders <- nlevels(founder_pie$UniqueID)
+    number_founders <- length(founder_pie$UniqueID)
     equal_rep <- round((100/number_founders), digits = 2)
     
     gg_color_hue <- function(n) {
       hues = seq(15, 375, length=n+1)
       hcl(h=hues, l=65, c=100)[1:n]}
     
+    chosen_graph$Founder <- as.factor(chosen_graph$Founder) 
+    
     mycols <- gg_color_hue(length(unique(founder_pie$UniqueID)))
     names(mycols) <- unique(founder_pie$UniqueID)
     mycols["Unk"] <- "black"
     names(founder_pie)[names(founder_pie)=="UniqueID"] <- "Founder"
-    
+    chosen_graph
     ggplot(chosen_graph, aes(x = Founder, y = Percent_contribution)) +
       geom_col(aes(fill = Founder),colour="black", width = 1) +
       geom_hline(yintercept=equal_rep, linetype="dashed", size = 0.75) +
@@ -194,7 +197,7 @@ server <- function(input, output) {
  file.copy(src, 'ICY.Rmd', overwrite = TRUE)
  
  
-   out <-  rmarkdown::render(src, params = list(all_data= input$sbdata$datapath,
+   out <-  rmarkdown::render(src, clean = TRUE, params = list(all_data= input$sbdata$datapath,
                                                   kinship = input$kindata$datapath,
                                                   founder = input$founder$datapath,
                                                   numbFem =input$numF,
@@ -203,7 +206,10 @@ server <- function(input, output) {
                       envir = new.env(),
                       output_format = "pdf_document" ) 
     file.rename(out, file)
+   
     })
+
+  
 }
 
 shinyApp(ui, server)

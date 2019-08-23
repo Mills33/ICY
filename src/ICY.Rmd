@@ -4,6 +4,7 @@ output:
   pdf_document:
       latex_engine: xelatex
       extra_dependencies: ["graphicx"]
+      keep_tex: false
       
 fontsize: 12pt
 header-includes:
@@ -158,9 +159,9 @@ library(reticulate)
 
 
 founder_pie <- read.csv(params$founder)
-
+founder_pie$UniqueID <- gsub(" ", "", founder_pie$UniqueID, fixed="TRUE")
 founder_pie <- founder_pie[order(-founder_pie$Representation),]
-number_founders <- nlevels(founder_pie$UniqueID)
+number_founders <- length(founder_pie$UniqueID)
 equal_rep <- round((100/number_founders), digits = 2)
 
 gg_color_hue <- function(n) {
