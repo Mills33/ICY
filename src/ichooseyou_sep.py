@@ -1,8 +1,5 @@
-
-
-import pandas as pd
-import numpy as np
-import csv
+import pandas
+import numpy
 
 def format_pmx_list(data):
     All_living_founder_list = []
@@ -80,9 +77,9 @@ def create_dataset(data_frame):
         [Perc_contrib.append(x) for x in Percent]
         [Founder_name.append(y) for y in Founder]
         [ID.append(Ind) for x in Percent]
-        stacked = np.vstack((ID, Perc_contrib, Founder_name))
-        empty_array = np.hstack((empty_array, stacked))
-    df1 = pd.DataFrame(empty_array, index = ['UniqueID',"FounderContribution(%)",'Founder'])
+        stacked = numpy.vstack((ID, Perc_contrib, Founder_name))
+        empty_array = numpy.hstack((empty_array, stacked))
+    df1 = pandas.DataFrame(empty_array, index = ['UniqueID',"FounderContribution(%)",'Founder'])
     df = df1.transpose()
     df = df.drop(df.index[0])
     return(df)
@@ -96,7 +93,7 @@ def founder_genome_equiv(proportions):
 
 def format_matrix_from_studbook(csv_file):
     column = []
-    kinship_matrix = pd.read_csv(csv_file)
+    kinship_matrix = pandas.read_csv(csv_file)
     kinship_matrix.drop(index = 0, inplace = True)
     kinship_matrix.drop(kinship_matrix.columns[1], axis = 1, inplace = True)
     kinship_matrix['UniqueID'] = kinship_matrix['UniqueID'].str.strip()
@@ -178,7 +175,7 @@ def chosen_animals(threshold, number_males, number_females, data, kinship_matrix
 
 
 def create_data_file(datafile):
-        panda = pd.read_csv(datafile, index_col = None, usecols=["UniqueID", "Location", "Sex", "F", "MK", "AgeYears", "MyFounders", "MyFounderContribs", "Alive"])
+        panda = pandas.read_csv(datafile, index_col = None, usecols=["UniqueID", "Location", "Sex", "F", "MK", "AgeYears", "MyFounders", "MyFounderContribs", "Alive"])
         all_live_found_list, data = format_pmx_list(panda)
         data.query("Alive == True", inplace = True)
         data.drop(columns = "Alive", inplace = True )

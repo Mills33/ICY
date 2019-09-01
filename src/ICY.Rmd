@@ -4,7 +4,7 @@ output:
   pdf_document:
       latex_engine: xelatex
       extra_dependencies: ["graphicx"]
-      keep_tex: false
+
       
 fontsize: 12pt
 header-includes:
@@ -16,11 +16,13 @@ header-includes:
     - \usepackage{longtable, tabu}
     - \usepackage{booktabs}
     - \usepackage{makecell}
-    - \usepackage[table]{xcolor}
+    - \usepackage{colortbl}
     - \usepackage{pdflscape}
     - \usepackage[export]{adjustbox}
+    - \definecolor{maroon}{cmyk}{0.02,0.02,0.01,0}
+
+    
 always_allow_html: yes
-mainfont: Times
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 
 params:
@@ -58,12 +60,12 @@ library(reticulate)
 library(knitr)
 library(kableExtra)
 library(tinytex)
-source_python("ichooseyou_sep.py")
+source_python("./ichooseyou_sep.py")
 ```
 \vspace{4cm}
 \begin{figure}[H]
 
-\includegraphics[width=\linewidth]{../Images/logo.png}
+\includegraphics[width=\linewidth]{./Images/logo.png}
  
 \end{figure}
 
@@ -96,13 +98,13 @@ Founder equivalents are a way of measuring genetic diversity from pedigree data.
 
 \begin{figure}[H]
 
-\includegraphics[width=\linewidth]{../Images/figure1.png}
+\includegraphics[width=\linewidth]{./Images/figure1.png}
   \caption{An example of how founder representation is calculated and how it can be visualised with bar charts}
 \end{figure}
 
 \begin{figure}[H]
 
-\includegraphics[width=0.7\linewidth, center]{../Images/figure2.png}
+\includegraphics[width=0.7\linewidth, center]{./Images/figure2.png}
   \caption{An example of how equal and unequal founder representation graphs may look. The dashed line represents the expected height of the bars if founder representation was equal which in this example, with 17 founders, is 5.88\%}
 \end{figure}
 
@@ -154,7 +156,7 @@ All section titles below (in blue) are linked directly to the sections they refe
 
 library(ggplot2)
 library(tidyverse)
-library(kableExtra)
+
 library(reticulate)
 
 
@@ -224,13 +226,13 @@ The table below contains the individuals that are recommended for reintroduction
 
 ```{r, echo= FALSE}
 library(tibble)
-library(kableExtra)
+
 library(reticulate)
 
 chosentable <- chosentable[,c(12,1,2,3,4,5,6,9,11)]
 
 
-kable(chosentable,row.names = F, format="latex",longtable = T, caption = "individuals recommended for reintroduction/translocation.", booktabs=TRUE)%>%kable_styling(latex_options = c("striped","HOLD_position","repeat_header"))%>% row_spec(0, bold = T)
+kable(chosentable,align="c", row.names = F, format="latex",longtable = T, caption = "Individuals recommended for reintroduction/translocation.", booktabs=TRUE)%>%kable_styling(latex_options = c("striped","HOLD_position","repeat_header"), stripe_color = "maroon")%>% row_spec(0, bold = T)%>%column_spec(column = 8, width = "3em") 
 names(founder_pie)[names(founder_pie)=="UniqueID"] <- "Founder"
 
 chosen_ind <- as.numeric(chosentable[[2]])
@@ -243,11 +245,13 @@ ggplot(chosen_graph, aes(x = Founder, y = Percent_contribution)) +
   ylab("Percentage representation") +
   ggtitle("Founder representation of the individuals recommended for reintroduction (coloured bars) 
 compared to the founder representation in current population (black line) ") +
-  theme(plot.title= element_text(margin = margin(15,0,30,0), hjust = 0.5, family  ="Times"),
+  theme(plot.title= element_text(margin = margin(15,0,30,0), hjust = 0.5, family ="Times", size = 10),
         legend.title = element_text(family  ="Times"),
         legend.text = element_text(family  ="Times"),
         axis.ticks.x = element_blank(),
         axis.text.x = element_blank(),
+        legend.key.size = unit(0.3, "cm"),
+        legend.key.width = unit(0.3,"cm"),
         axis.title.y = element_text(family = "Times"),
         panel.grid.major.x = element_blank())  +
   scale_fill_manual(values = mycols) +
@@ -293,11 +297,11 @@ ggplot(female_df,aes(x = Founder, y = Percent_contribution, fill = Founder)) +
 ```{r, echo= FALSE}
 library(dplyr)
 library(tibble)
-library(kableExtra)
+
 library(reticulate)
 female <- female_data[,c(12,1,2,3,4,5,6,9,11)]
 
-kable(female, align="c", row.names = F, format ="latex",longtable = T, caption = "Information of females most to least suitable for translocation, rankings based on the number of founder equivalents (Fe) in an individual and its mean kinship (MK)", booktabs=TRUE)%>%kable_styling(latex_options = c("striped","HOLD_position","repeat_header"))%>% row_spec(0, bold = T)%>%column_spec(column = 8, width = "5em") 
+kable(female, align="c", row.names = F, format ="latex",longtable = T, caption = "Information of females most to least suitable for translocation, rankings based on the number of founder equivalents (Fe) in an individual and its mean kinship (MK)", booktabs=TRUE)%>%kable_styling(latex_options = c("striped","HOLD_position","repeat_header"), stripe_color = "maroon")%>% row_spec(0, bold = T)%>%column_spec(column = 8, width = "5em") 
 ```
 \newpage
 \hypertarget{male_rep}{\section{\textbf{Male suitability report}}}
@@ -330,11 +334,11 @@ ggplot(male_df,aes(x = Founder, y = Percent_contribution, fill = Founder)) +
 
 \newpage
 ```{r, echo=FALSE }
-library(kableExtra)
+
 library(reticulate)
 
 male <- male_data[,c(12,1,2,3,4,5,6,9,11)]
-kable(male, align="c", row.names = F, format ="latex",longtable = T, caption = "Information of females most to least suitable for translocation, rankings based on the individual founder equivalent (Fe) and mean kinship (MK)", booktabs=TRUE)%>%kable_styling(latex_options = c("striped","HOLD_position","repeat_header"))%>% row_spec(0, bold = T)%>%column_spec(column = 8, width = "5em")
+kable(male, align="c", row.names = F, format ="latex",longtable = T, caption = "Information of females most to least suitable for translocation, rankings based on the individual founder equivalent (Fe) and mean kinship (MK)", booktabs=TRUE)%>%kable_styling(latex_options = c("striped","HOLD_position","repeat_header"), stripe_color = "maroon")%>% row_spec(0, bold = T)%>%column_spec(column = 8, width = "5em")
 
 ```
 \ 
@@ -351,6 +355,7 @@ The table overleaf shows all current individuals ranked from most suitable to le
 
 
 ```{r, echo=FALSE}
+
 
 x <- All_data$MyFounders
 x <- gsub("c(", "", x, fixed="TRUE")
@@ -371,7 +376,7 @@ All_data <- All_data %>% rename('Age(years)' = AgeYears)
 
 options(pillar.sigfig=3)
 
-kable(All_data, align="c", format ="latex", longtable =T, caption = "Information about individuals (both sexes) most to least suitable for translocation", booktabs=TRUE)%>%kable_styling(latex_options = c("striped","HOLD_position","repeat_header"), font_size = 7, full_width = T) %>% 
+kable(All_data, align="c", format ="latex", longtable =T, caption = "Information about individuals (both sexes) most to least suitable for translocation", booktabs=TRUE)%>%kable_styling(latex_options = c("striped","HOLD_position","repeat_header"), stripe_color = "maroon", font_size = 7, full_width = T) %>% 
   row_spec(0, bold = T) %>% 
   column_spec(column = 1, width = "3em") %>% 
   column_spec(column = 2, width = "3em") %>% 

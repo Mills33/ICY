@@ -54,11 +54,11 @@ Once the parameters are entered a table should fill with a group of individuals 
 
 You access the plots by clicking on the *Plots* tab (if you want to return to the table view simply click on the *Table* tab).
 
-This is what the plots look like when you **<u>have not</u>** uploaded a file to *Founder information from studbook* **NB** these plots may take a few seconds to load once you have clicked on the *Plots* tab.
+This is what the plots look like when you **<u>have not</u>** uploaded a file to *Founder information from studbook* *  **<u>NB</u> these plots may take a few seconds to load once you have clicked on the *Plots* tab.**
 
 <img src="../Images/Fig6.png" style="zoom:30%" />
 
-This is what the plots look like when you **<u>have</u>** uploaded a file to *Founder information from studbook* 
+This is what the plots look like when you **<u>have</u>** uploaded a file to *Founder information from studbook* . **<u>NB</u> these plots may take a few seconds to load once you have clicked on the *Plots* tab.**
 
 <img src="../Images/Fig6a.png" style="zoom:30%" />
 
