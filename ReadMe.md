@@ -26,7 +26,7 @@ The source code can find ICY on Github [here](https://github.com/Mills33/ICY).
 ICY is MIT Licensed.
 
 
-#### Why ICY?
+### Why ICY?
 
 Captive breeding programmes by zoos and other conservation practicioners are critical for 
 conserving species.
