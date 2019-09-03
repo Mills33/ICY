@@ -14,7 +14,8 @@ RUN apt-get update && apt-get install -y \
     libxml2 \
     libxml2-dev \
     python3 \
-    python3-pip
+    python3-pip \
+    texlive-xetex
 
 RUN R -e "install.packages('shiny', repos = 'http://cran.rstudio.com/')"
 RUN R -e "install.packages('shinythemes', repos = 'http://cran.rstudio.com/')"

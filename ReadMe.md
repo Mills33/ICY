@@ -1,6 +1,6 @@
 # <img src="Images/logo.png" width="30%" align="right" /> I.C.Y
 
-*Preserve genetic diversity: Make informed choices for individual reintroductions*
+*Preserve genetic diversity: Make informed choices for individual reintroductions.*
 
 ## Description
 
