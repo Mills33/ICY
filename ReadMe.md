@@ -9,8 +9,11 @@
 **I** **C**hoose **Y**ou helps conservation practitioners select captive individuals for 
 translocation/reintroduction/genetic rescue, based on their theoretical genetic diversity.
 
-ICY considers three input constraints: the number of males wanted, the number of females wanted, 
-and a threshold for the level of relatedness between the chosen birds. 
+ICY considers three input constraints:
+
+1. The number of males wanted.
+2. The number of females wanted.
+3. A threshold for the level of relatedness between any chosen individuals. 
 
 ICY reports the individuals that should be selected for transolcation that would maximise
 genetic diversity, given the three constraints.
@@ -18,7 +21,7 @@ genetic diversity, given the three constraints.
 ICY can also generate a downloadable report. The report provides more thorough explanations
 about the analysis ICY performs, and presents more informationb about the individuals within a given population.
 
-The source code can find ICY on [Github here](https://github.com/Mills33/ICY)
+The source code can find ICY on Github [here](https://github.com/Mills33/ICY).
 
 ICY is MIT Licensed.
 
