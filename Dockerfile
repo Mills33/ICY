@@ -26,6 +26,8 @@ RUN R -e "install.packages('tibble', repos = 'http://cran.rstudio.com/')"
 RUN R -e "install.packages('dplyr', repos = 'http://cran.rstudio.com/')"
 RUN R -e "install.packages('kableExtra', repos = 'http://cran.rstudio.com/')"
 RUN R -e "install.packages('knitr', repos = 'http://cran.rstudio.com/')"
+RUN R -e "install.packages('tidyverse', repos = 'http://cran.rstudio.com/')"
+RUN R -e "library(tinytex); tinytex::install_tinytex()"
 
 RUN pip3 install pandas numpy
 
@@ -39,12 +41,5 @@ COPY ICY.Rmd /
 COPY ichooseyou_sep.py /
 COPY www /www
 COPY Images /Images
-
-#EXPOSE 80
-
-#RUN sudo chown -R shiny:shiny /srv/shiny-server
-
-#COPY shiny-server.conf  /etc/shiny-server/shiny-server.conf
-#COPY shiny-server.sh /usr/bin/shiny-server.sh
 
 CMD ["Rscript", "/run.R"]
