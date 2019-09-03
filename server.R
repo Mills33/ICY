@@ -149,23 +149,25 @@ shinyServer(
     output$report <- downloadHandler(
       filename = "ICY_report.pdf",
       content = function(file) {
-        withProgress(message = "Generating report. Please wait...", {
+        withProgress(message = "Generating report. Please wait...", value = 1, {
           src <- normalizePath("ICY.Rmd")
           
           owd <- setwd(tempdir())
           on.exit(setwd(owd))
           file.copy(src, "ICY.Rmd", overwrite = TRUE)
           
-          out <- rmarkdown::render(
+          parameters <- list(
+            all_data = input$sbdata$datapath,
+            kinship = input$kindata$datapath,
+            founder = input$founder$datapath,
+            numbFem = input$numF,
+            numbMal = input$numM,
+            threshold = input$thold
+          )
+          
+          rmarkdown::render(
             src, clean = TRUE,
-            params = list(
-              all_data = input$sbdata$datapath,
-              kinship = input$kindata$datapath,
-              founder = input$founder$datapath,
-              numbFem = input$numF,
-              numbMal = input$numM,
-              threshold = input$thold
-            ),
+            params = parameters,
             envir = new.env(),
             output_format = "pdf_document",
             output_file = file
