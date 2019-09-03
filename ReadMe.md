@@ -19,6 +19,7 @@ ICY can also generate a downloadable report. The report provides more thorough e
 about the analysis ICY performs, and presents more informationb about the individuals within a given population.
 
 The source code can find ICY on [Github here](https://github.com/Mills33/ICY)
+
 ICY is MIT Licensed.
 
 
