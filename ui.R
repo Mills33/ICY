@@ -3,6 +3,33 @@ library(shinythemes)
 
 shinyUI(
   fluidPage(
+    
+    tags$head(
+      HTML(
+        "
+      <script>
+      var socket_timeout_interval
+      var n = 0
+      $(document).on('shiny:connected', function(event) {
+          socket_timeout_interval = setInterval(function(){
+            Shiny.onInputChange('alive_count', n++)
+          }, 15000)
+      });
+      $(document).on('shiny:disconnected', function(event) {
+          clearInterval(socket_timeout_interval)
+      });
+      </script>
+      "
+      ),
+      tags$style(
+        "
+        #keep_alive {
+          visibility: hidden;
+        }
+        "
+      )
+    ),
+    
     theme = shinytheme("cerulean"),
     navbarPage(
       title = div(
@@ -50,7 +77,8 @@ shinyUI(
             numericInput("numF", "Number of females needed", 0),
             br(),
             br(),
-            downloadButton("report", "Generate report")
+            downloadButton("report", "Generate report"),
+            textOutput("keep_alive")
           ),
 
           mainPanel(
@@ -72,5 +100,6 @@ shinyUI(
       ),
       tabPanel("About", includeMarkdown("Documents/About.md"))
     )
+    
   )
 )

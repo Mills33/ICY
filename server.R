@@ -174,5 +174,10 @@ shinyServer(
           )
         })
       })
+    
+    output$keep_alive <- renderText({
+      req(input$alive_count)
+      input$alive_count
+    })
   }
 )
