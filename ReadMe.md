@@ -104,8 +104,6 @@ docker build -t my-icy-app .
 docker run --rm -p 80:80 my-icy-app # Make sure -p argument matches port set above.
 ```
 
-You could use
-
 
 ## Having Issues?
 
