@@ -107,7 +107,7 @@ def format_matrix_from_studbook(csv_file):
     return(kinship_matrix)
 
 def change_index_to_ID(data):
-    data['UniqueID'] = str(data['UniqueID']).strip()
+    data['UniqueID'] = data['UniqueID'].astype(str)
     new_data = data.set_index('UniqueID', inplace = False, drop = True)
     new_data.rename(index=str, inplace=True)
     ranked_birds = list(new_data.index.values)
