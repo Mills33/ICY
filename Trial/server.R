@@ -6,17 +6,15 @@ library(dplyr)
 library(kableExtra)
 library(knitr)
 library(tinytex)
+library(shinyjs)
 
-source_python("ichooseyou_sep.py")
 
 
 shinyServer(
   function(input, output, session) {
-    
-    observeEvent(input$button, {
-      shinyjs::toggle("myBox")
-    })
-    
+
+    observeEvent({shinyjs::toggle("myBox")})
+
     output$relatedness_example <- renderTable({
       Relatedness <- as.factor(c("0.0000", "0.0313", "0.0625", "0.1250", "0.2500", "0.5000", "1.000"))
       Relationship <- c(
@@ -60,17 +58,11 @@ shinyServer(
       male_pie$UniqueID <- as.factor(male_pie$UniqueID)
       female_df <- mutate(female_pie, UniqueID = factor(UniqueID, unique(UniqueID)))
       male_df <- mutate(male_pie, UniqueID = factor(UniqueID, unique(UniqueID)))
-     
-      if (is.null(input$myBox)) {
-        chosentables <- chosen_ones_tables(
+
+      chosentables <- chosen_ones_tables(
         input$sbdata$datapath,
-        input$kindata$datapath, input$thold, input$numM, input$numF)}
-      else {
-        chosentables <- chosen_table_with_prior(input$sbdata$datapath,
-                                                input$kindata$datapath, input$thold, input$numM, input$numF,
-                                                input$myBox)
-      }
-      
+        input$kindata$datapath, input$thold, input$numM, input$numF
+      )
       chosentable <- chosentables[, c(12, 1, 2, 3, 4, 5, 6, 9, 11)]
 
       chosen_ind <- as.numeric(chosentable[[2]])
@@ -81,8 +73,8 @@ shinyServer(
         ggplot(chosen_graph, aes(x = Founder, y = Percent_contribution)) +
           geom_col(aes(fill = Founder), colour = "black", width = 1) +
           ylab("Percentage representation") +
-          ggtitle("Founder representation of the individuals recommended for reintroduction (coloured bars) 
-                compared to the founder representation in current population (black line) ") +
+          ggtitle("Founder representation of the individuals recommended for reintroduction (coloured bars)
+                  compared to the founder representation in current population (black line) ") +
           theme(
             plot.title = element_text(margin = margin(15, 0, 30, 0), hjust = 0.5, family = "Times"),
             legend.title = element_text(family = "Times"),
@@ -118,7 +110,7 @@ shinyServer(
           geom_hline(yintercept = equal_rep, linetype = "dashed", size = 0.75) +
           ylab("Percentage representation") +
           ggtitle("Founder representation of the individuals recommended for reintroduction (coloured bars)
-              compared to the founder representation in current population (black line) ") +
+                  compared to the founder representation in current population (black line) ") +
           theme(
             plot.title = element_text(margin = margin(15, 0, 30, 0), hjust = 0.5, family = "Times"),
             legend.title = element_text(family = "Times"),
@@ -145,57 +137,24 @@ shinyServer(
       }
 
 
-      if (is.null(input$myBox)) {
-        chosentables <- chosen_ones_tables(
-          input$sbdata$datapath,
-          input$kindata$datapath, input$thold, input$numM, input$numF)}
-      else {
-        chosentables <- chosen_table_with_prior(input$sbdata$datapath,
-                                                input$kindata$datapath, input$thold, input$numM, input$numF,
-                                                input$myBox)
-      }
-     
+
+      chosentables <- chosen_ones_tables(
+        input$sbdata$datapath,
+        input$kindata$datapath, input$thold, input$numM, input$numF
+      )
+
       chosendata <- chosentables[, c(12, 1, 2, 3, 4, 5, 6, 9, 11)]
     },
     caption = "These birds form a recommended group for reintroduction based on ICYs calculations. Rank is how they were ranked out of all the individuals in the file provided; F is the inbreeding coefficient (a measure of how inbred the bird is 0-1);
-   MK is the mean kinship coefficient which is a measure of, on average, how related that individual is to all the others in the file provided; fe stands for the founder equivalents this is a measure of theoretical genetic diversity that takes in to account the number of founders genomes that are represented in the individual and how evenly those genomes are represented. If an individual's Fe value was equal to the number of founders in the population that would imply it has retained as much genetic diversity as possible ",
+    MK is the mean kinship coefficient which is a measure of, on average, how related that individual is to all the others in the file provided; fe stands for the founder equivalents this is a measure of theoretical genetic diversity that takes in to account the number of founders genomes that are represented in the individual and how evenly those genomes are represented. If an individual's Fe value was equal to the number of founders in the population that would imply it has retained as much genetic diversity as possible ",
     caption.placement = getOption("xtable.caption.placement", "top"), striped = TRUE, rownames = FALSE
     )
 
-    output$report <- downloadHandler(
-      filename = "ICY_report.pdf",
-      content = function(file) {
-        withProgress(message = "Generating report. Please wait...", value = 1, {
-          src <- normalizePath("ICY.Rmd")
-          
-          owd <- setwd(tempdir())
-          on.exit(setwd(owd))
-          file.copy(src, "ICY.Rmd", overwrite = TRUE)
-          
-          parameters <- list(
-            all_data = input$sbdata$datapath,
-            kinship = input$kindata$datapath,
-            founder = input$founder$datapath,
-            numbFem = input$numF,
-            numbMal = input$numM,
-            threshold = input$thold,
-            prior = input$myBox
-          )
-          
-          rmarkdown::render(
-            src, clean = TRUE,
-            params = parameters,
-            envir = new.env(),
-            output_format = "pdf_document",
-            output_file = file
-          )
-        })
-      })
-    
+
+
     output$keep_alive <- renderText({
       req(input$alive_count)
       input$alive_count
     })
   }
-)
-
+    )

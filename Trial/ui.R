@@ -4,32 +4,7 @@ library(shinyjs)
 
 shinyUI(
   fluidPage(
-    
-    tags$head(
-      HTML(
-        "
-      <script>
-      var socket_timeout_interval
-      var n = 0
-      $(document).on('shiny:connected', function(event) {
-          socket_timeout_interval = setInterval(function(){
-            Shiny.onInputChange('alive_count', n++)
-          }, 15000)
-      });
-      $(document).on('shiny:disconnected', function(event) {
-          clearInterval(socket_timeout_interval)
-      });
-      </script>
-      "
-      ),
-      tags$style(
-        "
-        #keep_alive {
-          visibility: hidden;
-        }
-        "
-      )
-    ),
+
     
     theme = shinytheme("cerulean"),
     navbarPage(
@@ -71,9 +46,6 @@ shinyUI(
               max = 1,
               step = 0.0625
             ),
-            useShinyjs(),
-            checkboxInput(inputId = "button", label = "Previous releases?"),
-            textInput(inputId = "myBox", label = "IDs of previously released individuals", placeholder = "If known enter studbook IDs here"),
             br(),
             tableOutput("relatedness_example"),
             br(),
@@ -96,14 +68,7 @@ shinyUI(
             )
           )
         )
-      ),
-      navbarMenu(
-        "How to...",
-        tabPanel("How to use ICY", includeMarkdown("Documents/HowtoUse.md")),
-        tabPanel("How to generate the data", includeMarkdown("Documents/HowtoGenerate.md"))
-      ),
-      tabPanel("About", includeMarkdown("Documents/About.md"))
+      )
+
     )
-    
-  )
-)
+))
