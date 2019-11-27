@@ -208,6 +208,8 @@ def chosen_ones_tables(datafile, kinship_matrix, threshold, number_males, number
 def chosen_animals_with_prior(threshold, number_males, number_females, data, kinship_matrix, prior_list):
     female_counter = 0
     male_counter = 0
+    if type(prior_list) == str:
+        prior_list = [prior_list]
     prior_list = list(map(str, prior_list))
     the_chosen_ones = []
     all_data, ranked_birds = change_index_to_ID(data)
@@ -248,7 +250,7 @@ def chosen_table_with_prior(datafile, kinship_matrix, threshold, number_males, n
     kinship_matrix = format_matrix_from_studbook(kinship_matrix)
     the_chosen_ones, the_chosen_ones_table= chosen_animals_with_prior(threshold, number_males, number_females, data, kinship_matrix, prior_list)
     return(the_chosen_ones_table)
-    
+
 def checking_relatedness_named_ind(threshold, ID, kinship_matrix, prior_list):
     delete_individuals = []
     ID = str(ID)
@@ -258,3 +260,10 @@ def checking_relatedness_named_ind(threshold, ID, kinship_matrix, prior_list):
         if value >= threshold:
             delete_individuals.append(ID)
             return(delete_individuals)
+
+
+#or it is iterating through number not as number whole
+#prior_list = []
+#for x in prior_list_input:
+#    prior_list.extend(x)
+#prior_list =  prior_list.split(',')

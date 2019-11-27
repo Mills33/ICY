@@ -13,8 +13,9 @@ source_python("ichooseyou_sep.py")
 shinyServer(
   function(input, output, session) {
     
+    
     observeEvent(input$button, {
-      shinyjs::toggle("myBox")
+      shinyjs::toggle("id")
     })
     
     output$relatedness_example <- renderTable({
@@ -61,14 +62,17 @@ shinyServer(
       female_df <- mutate(female_pie, UniqueID = factor(UniqueID, unique(UniqueID)))
       male_df <- mutate(male_pie, UniqueID = factor(UniqueID, unique(UniqueID)))
      
-      if (is.null(input$myBox)) {
+      
+     
+      if (is.null(input$id)) {
         chosentables <- chosen_ones_tables(
         input$sbdata$datapath,
         input$kindata$datapath, input$thold, input$numM, input$numF)}
       else {
+        
         chosentables <- chosen_table_with_prior(input$sbdata$datapath,
                                                 input$kindata$datapath, input$thold, input$numM, input$numF,
-                                                input$myBox)
+                                          input$id)
       }
       
       chosentable <- chosentables[, c(12, 1, 2, 3, 4, 5, 6, 9, 11)]
@@ -145,22 +149,37 @@ shinyServer(
       }
 
 
-      if (is.null(input$myBox)) {
+      if (is.null(input$id)) {
         chosentables <- chosen_ones_tables(
           input$sbdata$datapath,
           input$kindata$datapath, input$thold, input$numM, input$numF)}
       else {
         chosentables <- chosen_table_with_prior(input$sbdata$datapath,
                                                 input$kindata$datapath, input$thold, input$numM, input$numF,
-                                                input$myBox)
+                                                input$id)
+        
       }
      
       chosendata <- chosentables[, c(12, 1, 2, 3, 4, 5, 6, 9, 11)]
+      
     },
     caption = "These birds form a recommended group for reintroduction based on ICYs calculations. Rank is how they were ranked out of all the individuals in the file provided; F is the inbreeding coefficient (a measure of how inbred the bird is 0-1);
    MK is the mean kinship coefficient which is a measure of, on average, how related that individual is to all the others in the file provided; fe stands for the founder equivalents this is a measure of theoretical genetic diversity that takes in to account the number of founders genomes that are represented in the individual and how evenly those genomes are represented. If an individual's Fe value was equal to the number of founders in the population that would imply it has retained as much genetic diversity as possible ",
     caption.placement = getOption("xtable.caption.placement", "top"), striped = TRUE, rownames = FALSE
     )
+    
+    uniqueid <- reactive({
+      req(input$sbdata,input$button)
+      
+      data <- read.csv(input$sbdata$datapath)
+      uniqueid <- data[,1]})
+      
+    observeEvent(uniqueid(), {  
+    updateSelectInput(session, "id",
+                        label = paste("Enter studbook ID of prior releases"),
+                        choices = uniqueid())
+      
+    })
 
     output$report <- downloadHandler(
       filename = "ICY_report.pdf",
@@ -179,7 +198,7 @@ shinyServer(
             numbFem = input$numF,
             numbMal = input$numM,
             threshold = input$thold,
-            prior = input$myBox
+            prior = input$id
           )
           
           rmarkdown::render(
