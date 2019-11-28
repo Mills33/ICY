@@ -178,7 +178,7 @@ def create_data_file(datafile):
         panda = pandas.read_csv(datafile, index_col = None, usecols=["UniqueID", "Location", "Sex", "F", "MK", "AgeYears", "MyFounders", "MyFounderContribs", "Alive"])
         all_live_found_list, data = format_pmx_list(panda)
         data.query("Alive == True", inplace = True)
-        data.drop(columns = "Alive", inplace = True )
+        data.drop(columns = "Alive", inplace = True)
         data.reset_index(inplace = True, drop = True)
         data = count_founders(data)
         data = convert_founder_percentage(data)
@@ -186,6 +186,19 @@ def create_data_file(datafile):
         data['Rank'] = list(range(1, len(data) + 1))
         return(data)
 
+# This function is the same as "female_data_format", except it gets the
+# table from R, rather than reading it in itself.
+def female_data_format_df(df):
+    female = df.query("Sex == 'Female'")
+    female_data = female.sort_values(["Fe", "MK"], ascending = [False, True])
+    return(female_data)
+
+# This function is the same as "male_data_format", except it gets the
+# table from R, rather than reading it in itself.
+def male_data_format_df(df):
+    male = df.query("Sex == 'Male'")
+    male_data = male.sort_values(["Fe", "MK"], ascending=[False, True])
+    return(male_data)
 
 def female_data_format(datafile):
         data = create_data_file(datafile)
@@ -199,7 +212,7 @@ def male_data_format(datafile):
         male_data = male.sort_values(["Fe", "MK"], ascending=[False, True])
         return(male_data)
 
-def chosen_ones_tables(datafile, kinship_matrix, threshold, number_males, number_females ):
+def chosen_ones_tables(datafile, kinship_matrix, threshold, number_males, number_females):
     data = create_data_file(datafile)
     kinship_matrix = format_matrix_from_studbook(kinship_matrix)
     the_chosen_ones, the_chosen_ones_table= chosen_animals(threshold, number_males, number_females, data, kinship_matrix)
