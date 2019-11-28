@@ -63,6 +63,8 @@ shinyUI(
               placeholder = "CSV files only",
               accept = c("text/csv")
             ),
+            numericInput("numM", "Number of males needed", 0),
+            numericInput("numF", "Number of females needed", 0),
             numericInput(
               "thold",
               "Relatedness threshold",
@@ -73,13 +75,10 @@ shinyUI(
             ),
             useShinyjs(),
             checkboxInput(inputId = "button", label = "Previous releases?"),
-            selectizeInput('id', 'Previous releases?', choices = NULL, multiple = TRUE),
+            selectizeInput('id', "Select studbook IDs of prior releases", choices = NULL, multiple = TRUE),
             #textInput(inputId = "myBox", value = NA, label ="If known enter studbook IDs here"),
             br(),
             tableOutput("relatedness_example"),
-            br(),
-            numericInput("numM", "Number of males needed", 0),
-            numericInput("numF", "Number of females needed", 0),
             br(),
             br(),
             downloadButton("report", "Generate report"),
