@@ -42,31 +42,6 @@ baseFounderPlot <- function(chosen_data){
   return(p)
 }
 
-
-#ggplot(chosen_graph, aes(x = Founder, y = Percent_contribution)) +
-#  geom_col(aes(fill = Founder), colour = "black", width = 1) +
-##  geom_hline(yintercept = equal_rep, linetype = "dashed", size = 0.75) +
-#  ylab("Percentage representation") +
-  # ggtitle("Founder representation of the individuals recommended for reintroduction (coloured bars)
-  #             compared to the founder representation in current population (black line) ") +
-  # theme(
-  #   plot.title = element_text(margin = margin(15, 0, 30, 0), hjust = 0.5, family = "Times"),
-  #   legend.title = element_text(family = "Times"),
-  #   legend.text = element_text(family = "Times"),
-  #   axis.ticks.x = element_blank(),
-  #   axis.text.x = element_blank(),
-  #   axis.title.y = element_text(family = "Times"),
-  #   panel.grid.major.x = element_blank()
-  # ) +
-##  scale_fill_manual(values = mycols) +
-  #facet_wrap(~UniqueID) +
-##  geom_line(data = founder_pie, aes(x = Founder, y = Contribution, group = 1), size = 1)
-
-
-
-
-
-
 shinyServer(
   function(input, output, session) {
     # We will store the data tables the user is going to use for the analysis
