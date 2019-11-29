@@ -50,10 +50,10 @@ shinyServer(
     
     # Observes for when the studbook file selector is updated.
     # When it is, this thing reads the data from it, updates the apps dataframes,
-    # and updates the options in the exclude individuals dropdown.
+    # and updates the options in the prior release dropdown.
     observeEvent(input$sbdata$datapath, {
       message("User uploaded studbook file")
-      state$sbdata <- create_data_file(input$sbdata$datapath)
+      state$sbdata <- create_data_file(input$sbdata$datapath) # makes sbdata reactive so that the other parts of the app need it they will react if it was not reactive they would not know
       message("Done reading in all studbook data from datapath")
       updateSelectInput(
         session, "id",
@@ -73,7 +73,7 @@ shinyServer(
       validate(
         need(input$sbdata$datapath != "", "Please load a genetic information file."),
         need(input$kindata$datapath != "", "Please load a kinship matrix file."),
-        need((input$numF + input$numM) > 0, "Please set either 'Number of males needed' or 'Number of females needed' (or both) to a value larger than 0.")
+        need((input$numF + input$numM) > 0, "Please set either 'Number of males needed' or 'Number of females needed' (or both) to a value larger than or equal to 0.")
       )
       
       if (is.null(input$id)) {
