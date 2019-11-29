@@ -19,6 +19,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN R -e "install.packages('shiny', repos = 'http://cran.rstudio.com/')"
 RUN R -e "install.packages('shinythemes', repos = 'http://cran.rstudio.com/')"
+RUN R -e "install.packages('shinyjs', repos = 'http://cran.rstudio.com/')"
 RUN R -e "install.packages('rmarkdown', repos = 'http://cran.rstudio.com/')"
 RUN R -e "install.packages('reticulate', repos = 'http://cran.rstudio.com/')"
 RUN R -e "install.packages('tinytex')"
