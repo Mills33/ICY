@@ -44,6 +44,12 @@ params:
   founder:
     value: NA
     input: file
+  chosen_tab:
+    value: NA
+    input: dataframe
+  prior:
+    value: NA
+    input: factor
 
 ---
 \ 
@@ -74,7 +80,7 @@ source_python("./ichooseyou_sep.py")
 
 
 All_data <- py$create_data_file(params$all_data)
-chosentable <- py$chosen_ones_tables(params$all_data, params$kinship , params$thresh, params$numbMal, params$numbFem)
+#chosentable <- py$chosen_ones_tables(params$all_data, params$kinship , params$thresh, params$numbMal, params$numbFem)
 female_data <- py$female_data_format(params$all_data)
 male_data <- py$male_data_format(params$all_data)
 female_pie <- py$create_dataset(female_data)
@@ -228,9 +234,9 @@ The table below contains the individuals that are recommended for reintroduction
 library(tibble)
 
 library(reticulate)
-
-chosentable <- chosentable[,c(12,1,2,3,4,5,6,9,11)]
-
+#pass chosen table to markdown
+#chosentable <- chosentable[,c(12,1,2,3,4,5,6,9,11)]
+chosentable <- params$chosen_tab
 
 kable(chosentable,align="c", row.names = F, format="latex",longtable = T, caption = "Individuals recommended for reintroduction/translocation.", booktabs=TRUE)%>%kable_styling(latex_options = c("striped","HOLD_position","repeat_header"), stripe_color = "maroon")%>% row_spec(0, bold = T)%>%column_spec(column = 8, width = "3em") 
 names(founder_pie)[names(founder_pie)=="UniqueID"] <- "Founder"

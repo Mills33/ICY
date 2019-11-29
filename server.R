@@ -171,10 +171,9 @@ shinyServer(
     })
     
     output$relatedness_example <- renderTable({
-      Relatedness <- as.factor(c("0.0000", "0.0313", "0.0625", "0.1250", "0.2500", "0.5000", "1.000"))
+      Relatedness <- as.factor(c("0.0000","0.1250", "0.2500", "0.5000"))
       Relationship <- c(
-        "Unrelated", "Second-cousins", "Half-cousins, cousins-once-removed", "Cousins, great-grandparents",
-        "Half-siblings, grandparents, uncle/aunt", "Siblings, parent", "Clone"
+        "Unrelated", "Half-siblings", "Parent-offspring, Siblings","Monozygotic twins"
       )
       df <- data.frame(Relatedness, Relationship)
     },
@@ -199,13 +198,14 @@ shinyServer(
             numbFem = input$numF,
             numbMal = input$numM,
             threshold = input$thold,
-            prior = input$id
+            chosen_tab = chosendata()
+            
           )
           
           rmarkdown::render(
             src, clean = TRUE,
             params = parameters,
-            envir = new.env(),
+            #envir = new.env(),
             output_format = "pdf_document",
             output_file = file
           )
