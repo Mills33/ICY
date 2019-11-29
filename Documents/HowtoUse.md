@@ -64,15 +64,25 @@ This is what the plots look like when you **<u>have</u>** uploaded a file to *Fo
 
 
 
-It is possible that you may encounter the below error having uploaded the two files and entered the three input parameters. This is fine it simply means that there is not a group of individuals with the number of males/females stated that are less related then threshold that was specified. If this happens you can try altering the number of individuals you want to reintroduce or increase the *Relatedness threshold* this means you are allowing individiuals to be more related. The level of relatedness that is acceptable will depend on the population in question and the practioners judgement. A table of relatedness thresholds and familial relationships is below the input box to help users make decisions about what is appropriate however you can enter <u>**any**</u> value between 0 and 1 not just those in the table.
+After you have uploaded the necessary files and parameters you may encounter the following error "***ICY could not find enough males/females that satisfied user parameters***." 
+
+This means that there is not a group of individuals with the number of males/females stated that are less related then threshold that was specified.
+
+If this happens you can try altering the number of individuals you want to reintroduce or increase the *Relatedness threshold* this means you are allowing individiuals to be more related. The level of relatedness that is acceptable will depend on the population in question and the practioners judgement. A table of relatedness thresholds and familial relationships is below the input box to help users make decisions about what is appropriate however you can enter <u>**any**</u> value between 0 and 1 not just those in the table.
 
 
 
 <img src="../Images/Fig3a.png" style="zoom:30%" />
 
+### 4. Prior releases
 
+ICY provides users with the ability to specify individuals that have been previously released. This is so that you can make sure that the group of individuals that you want to release next are not realted to each other **or** the individual(s) that was/were previously released.  Simply tick the box *Prior release* and you can select the studbook ids (also known as Unique ID) of as many individuals as necessary. 
 
-### 4. Generating reports
+<img src="../Images/Fig24.png" style="zoom:30%" />
+
+This function can also be used to exclude relations of particular individuals for reasons other than prior releases.
+
+### 5. Generating reports
 
 ICY allows the user to generate an indepth report about the selection of individuals in the data files entered by the user. This report contains information about how ICY works, the representation of founders in the current population, information about the founder representation in every individula in the population. In order to generate this report the user must upload a founder contribution file ( which can be easily generated from studbook software)  **<u>as well as</u>** the other files and input parameters required and mentioned above. Then simply click *Generate report* and a pdf named ICY_report.pdf will be downloaded wherever your files download.
 

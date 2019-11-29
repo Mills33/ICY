@@ -76,7 +76,6 @@ shinyUI(
             useShinyjs(),
             checkboxInput(inputId = "button", label = "Previous releases?"),
             selectizeInput('id', "Select studbook IDs of prior releases", choices = NULL, multiple = TRUE),
-            #textInput(inputId = "myBox", value = NA, label ="If known enter studbook IDs here"),
             br(),
             tableOutput("relatedness_example"),
             br(),

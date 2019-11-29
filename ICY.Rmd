@@ -69,11 +69,11 @@ library(tinytex)
 source_python("./ichooseyou_sep.py")
 ```
 \vspace{4cm}
-\begin{figure}[H]
+\begin{center}
 
 \includegraphics[width=\linewidth]{./Images/logo.png}
  
-\end{figure}
+\end{center}
 
 ```{r, include=FALSE}
 
