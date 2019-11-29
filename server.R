@@ -95,6 +95,12 @@ shinyServer(
         )
      }
      message("ICY has chosen individuals according to users updated parameters")
+     
+     validate(
+       need(sum(chosentable$Sex == "Male") == input$numM, "ICY could not find enough males that satisfied user parameters."),
+       need(sum(chosentable$Sex == "Female") == input$numF, "ICY could not find enough females that satisfied user parameters.")
+      )
+     
      if (nrow(chosentable) == 0 && input$numM > 0 && input$numF > 0) {
        message("There are no individuals that satisfy the users parameters")
      }

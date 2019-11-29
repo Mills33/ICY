@@ -143,31 +143,57 @@ def checking_relatedness(threshold, ID, kinship_matrix):
     number_unsuitable = len(delete_individuals)
     return(delete_individuals, number_unsuitable)
 
+# def chosen_animals(threshold, number_males, number_females, data, kinship_matrix):
+#     female_counter = 0
+#     male_counter = 0
+#     the_chosen_ones = []
+#     all_data, ranked_birds = change_index_to_ID(data)
+#     while (female_counter != number_females or male_counter != number_males):
+#         individual = all_data.index.values[0]
+#         if all_data.at[individual, 'Sex'] == 'Female':
+#             if female_counter < number_females:
+#                 undesirable_list, number = checking_relatedness(threshold, individual, kinship_matrix)
+#                 the_chosen_ones.append(individual)
+#                 all_data = delete_too_related(all_data, undesirable_list)
+#                 kinship_matrix = remove_related_from_kinship_matrix(kinship_matrix, undesirable_list)
+#                 female_counter += 1
+#             else:
+#                 all_data.drop(index = individual, inplace = True) # add exception if bird deleted from data but not kinship if it then is added to an undesirable list thst they try and execute will already have been deleted
+#         else: #all_data.at[individual,'Sex'] == 'Male'
+#             if male_counter < number_males:
+#                 undesirable_list, number = checking_relatedness(threshold, individual, kinship_matrix)
+#                 the_chosen_ones.append(individual)
+#                 all_data = delete_too_related(all_data, undesirable_list) # add exception to undesirable if empty
+#                 kinship_matrix = remove_related_from_kinship_matrix(kinship_matrix, undesirable_list)
+#                 male_counter += 1
+#             else:
+#                 all_data.drop(index = individual, inplace = True)
+#     ranked_data, ranked_birds = change_index_to_ID(data)
+#     chosen_ones_tables = ranked_data.loc[the_chosen_ones]
+#     chosen_ones_tables.reset_index(level=0, inplace=True)
+#     return(the_chosen_ones, chosen_ones_tables)
+
 def chosen_animals(threshold, number_males, number_females, data, kinship_matrix):
-    female_counter = 0
-    male_counter = 0
+    wanted_num = {'Male': number_males, 'Female': number_females}
+    total_wanted = number_males + number_females
+    counters = {'Male': 0, 'Female': 0}
     the_chosen_ones = []
     all_data, ranked_birds = change_index_to_ID(data)
-    while (female_counter != number_females or male_counter != number_males):
+    # While we still have some individuals to find...
+    while (sum(counters.values()) < total_wanted and not all_data.empty):
+        # Get the next individual
         individual = all_data.index.values[0]
-        if all_data.at[individual, 'Sex'] == 'Female':
-            if female_counter < number_females:
-                undesirable_list, number = checking_relatedness(threshold, individual, kinship_matrix)
-                the_chosen_ones.append(individual)
-                all_data = delete_too_related(all_data, undesirable_list)
-                kinship_matrix = remove_related_from_kinship_matrix(kinship_matrix, undesirable_list)
-                female_counter += 1
-            else:
-                all_data.drop(index = individual, inplace = True) # add exception if bird deleted from data but not kinship if it then is added to an undesirable list thst they try and execute will already have been deleted
-        else: #all_data.at[individual,'Sex'] == 'Male'
-            if male_counter < number_males:
-                undesirable_list, number = checking_relatedness(threshold, individual, kinship_matrix)
-                the_chosen_ones.append(individual)
-                all_data = delete_too_related(all_data, undesirable_list) # add exception to undesirable if empty
-                kinship_matrix = remove_related_from_kinship_matrix(kinship_matrix, undesirable_list)
-                male_counter += 1
-            else:
-                all_data.drop(index = individual, inplace = True)
+        # Check its sex.
+        indsex = all_data.at[individual, 'Sex']
+        # If we already have enough of this sex of individual, skip
+        if counters[indsex] < wanted_num[indsex]:
+            undesirable_list, number = checking_relatedness(threshold, individual, kinship_matrix)
+            the_chosen_ones.append(individual)
+            all_data = delete_too_related(all_data, undesirable_list)
+            kinship_matrix = remove_related_from_kinship_matrix(kinship_matrix, undesirable_list)
+            counters[indsex] += 1
+        else:
+            all_data.drop(index = individual, inplace = True)
     ranked_data, ranked_birds = change_index_to_ID(data)
     chosen_ones_tables = ranked_data.loc[the_chosen_ones]
     chosen_ones_tables.reset_index(level=0, inplace=True)
@@ -215,7 +241,7 @@ def male_data_format(datafile):
 def chosen_ones_tables(datafile, kinship_matrix, threshold, number_males, number_females):
     data = create_data_file(datafile)
     kinship_matrix = format_matrix_from_studbook(kinship_matrix)
-    the_chosen_ones, the_chosen_ones_table= chosen_animals(threshold, number_males, number_females, data, kinship_matrix)
+    the_chosen_ones, the_chosen_ones_table = chosen_animals(threshold, number_males, number_females, data, kinship_matrix)
     return(the_chosen_ones_table)
 
 def chosen_animals_with_prior(threshold, number_males, number_females, data, kinship_matrix, prior_list):
