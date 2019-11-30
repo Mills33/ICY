@@ -19,7 +19,6 @@ RUN apt-get update && apt-get install -y \
 
 RUN R -e "install.packages('shiny', repos = 'http://cran.rstudio.com/')"
 RUN R -e "install.packages('shinythemes', repos = 'http://cran.rstudio.com/')"
-RUN R -e "install.packages('shinyjs', repos = 'http://cran.rstudio.com/')"
 RUN R -e "install.packages('rmarkdown', repos = 'http://cran.rstudio.com/')"
 RUN R -e "install.packages('reticulate', repos = 'http://cran.rstudio.com/')"
 RUN R -e "install.packages('tinytex')"
@@ -30,6 +29,7 @@ RUN R -e "install.packages('kableExtra', repos = 'http://cran.rstudio.com/')"
 RUN R -e "install.packages('knitr', repos = 'http://cran.rstudio.com/')"
 RUN R -e "install.packages('tidyverse', repos = 'http://cran.rstudio.com/')"
 RUN R -e "library(tinytex); tinytex::install_tinytex()"
+RUN R -e "install.packages('shinyjs')"
 
 RUN pip3 install pandas numpy
 
