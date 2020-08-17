@@ -136,7 +136,7 @@ def remove_related_from_kinship_matrix(kinship_matrix, undesirable_list):
         KM.drop(columns = bird , inplace = True)
     return(KM)
 
-#sees how related (pariwise relatedness) using kinship matrix if fail and are more related than threshold added to list to remove from data and KM 
+#sees how related (pariwise relatedness) using kinship matrix if fail and are more related than threshold added to list to remove from data and KM
 def checking_relatedness(threshold, ID, kinship_matrix):
     delete_individuals = []
     ID = str(ID)
@@ -152,6 +152,7 @@ def checking_relatedness(threshold, ID, kinship_matrix):
     return(delete_individuals, number_unsuitable)
 
 #MAIN ALGORITHM chooses individuals that satisfy requirements - number female, number male and less than relatedness threshold
+#if any filtering needed then this is not used but rather chosen_animals_with_prior
 def chosen_animals(threshold, number_males, number_females, data, kinship_matrix):
     wanted_num = {'Male': number_males, 'Female': number_females}
     total_wanted = number_males + number_females
@@ -177,8 +178,8 @@ def chosen_animals(threshold, number_males, number_females, data, kinship_matrix
     chosen_ones_tables = ranked_data.loc[the_chosen_ones]
     chosen_ones_tables.reset_index(level=0, inplace=True)
     return(the_chosen_ones, chosen_ones_tables)
-
-
+#Formats studbook data to create dataframe containing only living individuals,
+# then sorts the dataframe based on MK then Fe
 def create_data_file(datafile):
         panda = pandas.read_csv(datafile, index_col = None, usecols=["UniqueID", "Location", "Sex", "F", "MK", "AgeYears", "MyFounders", "MyFounderContribs", "Alive"])
         all_live_found_list, data = format_pmx_list(panda)
@@ -187,7 +188,7 @@ def create_data_file(datafile):
         data.reset_index(inplace = True, drop = True)
         data = count_founders(data)
         data = convert_founder_percentage(data)
-        data = data.sort_values(["Fe", "MK"], ascending=[False, True])
+        data = data.sort_values(["MK","Fe"], ascending=[True,False]) #"Fe", False
         data['Rank'] = list(range(1, len(data) + 1))
         return(data)
 
@@ -195,88 +196,116 @@ def create_data_file(datafile):
 # table from R, rather than reading it in itself.
 def female_data_format_df(df):
     female = df.query("Sex == 'Female'")
-    female_data = female.sort_values(["Fe", "MK"], ascending = [False, True])
+    female_data = female.sort_values(["MK","Fe"], ascending = [True,False]) #False, "Fe",
     return(female_data)
 
 # This function is the same as "male_data_format", except it gets the
 # table from R, rather than reading it in itself.
 def male_data_format_df(df):
     male = df.query("Sex == 'Male'")
-    male_data = male.sort_values(["Fe", "MK"], ascending=[False, True])
+    male_data = male.sort_values(["MK","Fe"], ascending=[True,False]) # "Fe", False,
     return(male_data)
 
 def female_data_format(datafile):
         data = create_data_file(datafile)
         female = data.query("Sex == 'Female'")
-        female_data = female.sort_values(["Fe", "MK"], ascending=[False, True])
+        female_data = female.sort_values(["MK","Fe"], ascending=[True, False]) # "Fe" False
         return(female_data)
 
 def male_data_format(datafile):
         data = create_data_file(datafile)
         male = data.query("Sex == 'Male'")
-        male_data = male.sort_values(["Fe", "MK"], ascending=[False, True])
+        male_data = male.sort_values(["MK","Fe"], ascending=[True,False]) # "Fe", False,
         return(male_data)
-#runs functions produces table of individuals chosen by ICY (table can be empty if cant satisfy all requirements) includes prior info   
+#runs functions produces table of individuals chosen by ICY (table can be empty if cant satisfy all requirements) includes prior info
 def chosen_ones_tables(datafile, kinship_matrix, threshold, number_males, number_females):
     data = create_data_file(datafile)
     kinship_matrix = format_matrix_from_studbook(kinship_matrix)
     the_chosen_ones, the_chosen_ones_table = chosen_animals(threshold, number_males, number_females, data, kinship_matrix)
     return(the_chosen_ones_table)
 
-#MAIN ALGORITHM chooses individuals that satisfy requirements - number female, number male and less than relatedness threshold BUT also makes sure no pairwise 
-#relatedness more than the threshold with prior individuals released or if you have individuals you want to ensure no others are related too more than the 
+#ensures input to python function in a list
+def coerce_to_list(value):
+    if value is None:
+        return []
+    if isinstance(value, list):
+        return value
+    else:
+        return [value]
+
+#MAIN ALGORITHM chooses individuals that satisfy requirements - number female, number male and less than relatedness threshold BUT also makes sure no pairwise
+#relatedness more than the threshold with prior individuals released or if you have individuals you want to ensure no others are related too more than the
 #threshold
-def chosen_animals_with_prior(threshold, number_males, number_females, data, kinship_matrix, prior_list):
+
+def chosen_animals_with_prior(threshold, number_males, number_females, data, kinship_matrix, age, prior_list, location_list):
+    # Possible None's prior_list and location_list.
+    # If prior_list is not None, then it is either a scalar string or a list of strings. Coerce so is always a list of strings.
+    prior_list = coerce_to_list(prior_list)
+    location_list = coerce_to_list(location_list)
     wanted_num = {'Male': number_males, 'Female': number_females}
     total_wanted = number_males + number_females
     counters = {'Male': 0, 'Female': 0}
-    if type(prior_list) == str:
-        prior_list = [prior_list]
-    prior_list = list(map(str, prior_list))
     the_chosen_ones = []
     all_data, ranked_birds = change_index_to_ID(data)
+    filter_all_data = filter_data(all_data, age, location_list)
     # While we still have some individuals to find...
-    while (sum(counters.values()) < total_wanted and not all_data.empty):
+    while (sum(counters.values()) < total_wanted and not filter_all_data.empty):
         # Get the next individual
-        individual = all_data.index.values[0]
+        individual = filter_all_data.index.values[0]
+        print(individual)
         check_if_unsuitable = checking_relatedness_named_ind(threshold, individual, kinship_matrix, prior_list)
         if check_if_unsuitable:
-            all_data = delete_too_related(all_data, check_if_unsuitable)
+            all_data = delete_too_related(filter_all_data, check_if_unsuitable)
         else:
           # Check its sex.
-          indsex = all_data.at[individual, 'Sex']
+          indsex = filter_all_data.at[individual, 'Sex']
           # If we already have enough of this sex of individual, skip
           if counters[indsex] < wanted_num[indsex]:
               undesirable_list, number = checking_relatedness(threshold, individual, kinship_matrix)
               the_chosen_ones.append(individual)
-              all_data = delete_too_related(all_data, undesirable_list)
+              all_data = delete_too_related(filter_all_data, undesirable_list)
               kinship_matrix = remove_related_from_kinship_matrix(kinship_matrix, undesirable_list)
               counters[indsex] += 1
           else:
-              all_data.drop(index = individual, inplace = True)
+              filter_all_data.drop(index = individual, inplace = True)
     ranked_data, ranked_birds = change_index_to_ID(data)
     chosen_ones_tables = ranked_data.loc[the_chosen_ones]
     chosen_ones_tables.reset_index(level=0, inplace=True)
     return(the_chosen_ones, chosen_ones_tables)
+#runs functions produces table of individuals chosen by ICY (table can be empty if cant satisfy all requirements) includes prior info
 
-#runs functions produces table of individuals chosen by ICY (table can be empty if cant satisfy all requirements) includes prior info   
-def chosen_table_with_prior(datafile, kinship_matrix, threshold, number_males, number_females, prior_list):
+
+def chosen_table_with_prior(datafile, kinship_matrix, threshold, number_males, number_females, age, prior_list, location):
     data = create_data_file(datafile)
     kinship_matrix = format_matrix_from_studbook(kinship_matrix)
-    the_chosen_ones, the_chosen_ones_table= chosen_animals_with_prior(threshold, number_males, number_females, data, kinship_matrix, prior_list)
+    the_chosen_ones, the_chosen_ones_table= chosen_animals_with_prior_2(threshold, number_males, number_females, data, kinship_matrix, age, prior_list, location) #prior_list, age, location
     return(the_chosen_ones_table)
 
 def checking_relatedness_named_ind(threshold, ID, kinship_matrix, prior_list):
     delete_individuals = []
+    #if not prior_list:
+    #    return(delete_individuals)
+    #else:
     ID = str(ID)
     for individual in prior_list:
         kin_coeff = kinship_matrix.loc[ID, individual]
-        value= float(kin_coeff)
+        value = float(kin_coeff)
         if value >= threshold:
             delete_individuals.append(ID)
-            return(delete_individuals)
+    return(delete_individuals)
 
-
+def filter_data(data, age, location): # not sure about this logic
+    if age == 500 and not location:
+        return(data)
+    elif not location:
+        all_data = data[data['AgeYears'] <= age]
+        return(all_data)
+    elif age == 500:
+        all_data = data[data.Location.isin(location)]
+        return(all_data)
+    else:
+        all_data = data[(data['AgeYears'] <= age) & (data.Location.isin(location))]
+        return(all_data)
 #or it is iterating through number not as number whole
 #prior_list = []
 #for x in prior_list_input:

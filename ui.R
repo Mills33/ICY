@@ -4,7 +4,7 @@ library(shinyjs)
 
 shinyUI(
   fluidPage(
-    
+
     tags$head(
       HTML(
         "
@@ -30,7 +30,7 @@ shinyUI(
         "
       )
     ),
-    
+
     theme = shinytheme("cerulean"),
     navbarPage(
       title = div(
@@ -51,6 +51,15 @@ shinyUI(
               placeholder = "CSV files only",
               accept = c("text/csv")
             ),
+            useShinyjs(),
+            checkboxInput(inputId = "tick", label = "Filter Individuals?"),
+            selectizeInput('location', "Select Locations of individuals", choices = NULL, multiple = TRUE),
+            numericInput('age', "Age limit", value = 500,
+            min = 0,
+            max = 500,
+            step = 0.5
+            ),
+            br(),
             fileInput(
               "kindata",
               "Kinship matrix from studbook",
@@ -63,8 +72,8 @@ shinyUI(
               placeholder = "CSV files only",
               accept = c("text/csv")
             ),
-            numericInput("numM", "Number of males needed", 0),
-            numericInput("numF", "Number of females needed", 0),
+            numericInput("numM", "Number of males needed", 0, min = 0),
+            numericInput("numF", "Number of females needed", 0, min =0),
             numericInput(
               "thold",
               "Relatedness threshold",
@@ -86,9 +95,8 @@ shinyUI(
 
           mainPanel(
             tabsetPanel(
-              type = "tabs",
               tabPanel(
-                "Table",
+                "Table",style = "font-size: 18pt",
                 tableOutput("chosentable")
               ),
               tabPanel("Plots", plotOutput("chosenplot"))
@@ -103,6 +111,6 @@ shinyUI(
       ),
       tabPanel("About", includeMarkdown("Documents/About.md"))
     )
-    
+
   )
 )
