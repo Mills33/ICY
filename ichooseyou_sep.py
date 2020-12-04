@@ -188,7 +188,7 @@ def create_data_file(datafile):
         data.reset_index(inplace = True, drop = True)
         data = count_founders(data)
         data = convert_founder_percentage(data)
-        data = data.sort_values(["MK","Fe"], ascending=[True,False]) #"Fe", False
+        data = data.sort_values(["Fe","MK"], ascending=[False,True]) #"Fe", False
         data['Rank'] = list(range(1, len(data) + 1))
         return(data)
 
@@ -196,26 +196,26 @@ def create_data_file(datafile):
 # table from R, rather than reading it in itself.
 def female_data_format_df(df):
     female = df.query("Sex == 'Female'")
-    female_data = female.sort_values(["MK","Fe"], ascending = [True,False]) #False, "Fe",
+    female_data = female.sort_values(["Fe","MK"], ascending = [False,True]) #False, "Fe",
     return(female_data)
 
 # This function is the same as "male_data_format", except it gets the
 # table from R, rather than reading it in itself.
 def male_data_format_df(df):
     male = df.query("Sex == 'Male'")
-    male_data = male.sort_values(["MK","Fe"], ascending=[True,False]) # "Fe", False,
+    male_data = male.sort_values(["Fe","MK"], ascending=[False,True]) # "Fe", False,
     return(male_data)
 
 def female_data_format(datafile):
         data = create_data_file(datafile)
         female = data.query("Sex == 'Female'")
-        female_data = female.sort_values(["MK","Fe"], ascending=[True, False]) # "Fe" False
+        female_data = female.sort_values(["Fe","MK"], ascending=[False, True]) # "Fe" False
         return(female_data)
 
 def male_data_format(datafile):
         data = create_data_file(datafile)
         male = data.query("Sex == 'Male'")
-        male_data = male.sort_values(["MK","Fe"], ascending=[True,False]) # "Fe", False,
+        male_data = male.sort_values(["Fe","MK"], ascending=[False,True]) # "Fe", False,
         return(male_data)
 #runs functions produces table of individuals chosen by ICY (table can be empty if cant satisfy all requirements) includes prior info
 def chosen_ones_tables(datafile, kinship_matrix, threshold, number_males, number_females):

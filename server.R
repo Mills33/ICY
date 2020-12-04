@@ -56,7 +56,7 @@ shinyServer(
       message("User uploaded studbook file")
       state$sbdata <- create_data_file(input$sbdata$datapath) # makes sbdata reactive so that the other parts of the app need it they will react if it was not reactive they would not know
       message("Done reading in all studbook data from datapath")
-      
+
       updateSelectInput(
         session, "location",
         label = "Filter for location",
@@ -68,8 +68,8 @@ shinyServer(
         choices = sort(state$sbdata[,1])
       )
       message("Done updating the options in the dropdown")
-      
-     
+
+
 
     })
 
@@ -78,7 +78,7 @@ shinyServer(
     # this code so the work effectively got done twice, and there were two places
     # bugs might appear. So we turn it into a single reactive expression, which only
     # runs once, and then the tables and the plots output use the cached result.
-    #Logic long and not concise to reflect 4 options 1) no filtering or prior releases, 
+    #Logic long and not concise to reflect 4 options 1) no filtering or prior releases,
     # 2) no filtering but prior release, 3) filtering but no prior release, 4) filtering and prior release.
     chosendata <- reactive({
       # Let's validate the needed input parameters
@@ -108,7 +108,7 @@ shinyServer(
           input$location
         )}
       message(str(chosentable))
- #add age, location     
+ #add age, location
      message("ICY has chosen individuals according to users updated parameters")
 
      validate(
@@ -190,7 +190,7 @@ shinyServer(
     observeEvent(input$tick, {
       shinyjs::toggle("location")
       shinyjs::toggle("age")
-      
+
     })
     observeEvent(input$tick, {
       shinyjs::reset("location")
